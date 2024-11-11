@@ -1,0 +1,84 @@
+.companySection {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    background-color: #eaeaea;
+    padding: 3rem;
+    gap: 2rem;
+}
+
+.imageContainer {
+    margin-top: 1rem;
+}
+
+.companyImage {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.companyContent {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #1d3a3a;
+    text-align: center;
+    font-family: 'Georgia', serif;
+}
+
+.topContent {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.topContent h1,
+.bottomContent h2 {
+    font-size: 2.5rem;
+    color: #123a34;
+    margin-bottom: 1rem;
+}
+
+.welcomeText {
+    font-size: 1.1rem;
+    color: #234e4a;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.bottomContent {
+    align-self: center;
+    margin-top: 5rem;
+}
+
+.companyDescription {
+    font-size: 1rem;
+    color: #1d3a3a;
+    line-height: 1.8;
+}
+
+.uploadButton {
+    font-size: 2.1rem;
+    font-weight: 400;
+    font-family: 'Georgia', serif;
+    padding: 1.2rem 5rem;
+    background-color: #234e4a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    margin-top: 0.1rem;
+    margin-bottom: 4rem;
+    width: auto;
+}
+
+.uploadButton:hover {
+    background-color: #1b3b3a;
+}

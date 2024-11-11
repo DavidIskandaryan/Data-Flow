@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import "./ListTodoLists";
 import ListToDoLists from "./ListTodoLists";
 import ToDoList from "./ToDoList";
+import WelcomeScreen from "./WelcomeScreen";
 
 function App() {
   const [listSummaries, setListSummaries] = useState(null);
@@ -24,7 +26,6 @@ function App() {
       const newListData = {
         name: newName,
       };
-
       await axios.post(`/api/lists`, newListData);
       reloadData().catch(console.error);
     };
@@ -49,24 +50,24 @@ function App() {
     reloadData().catch(console.error);
   }
 
-  if (selectedItem === null) {
-    return (
-      <div className="App">
-        <ListToDoLists
-          listSummaries={listSummaries}
-          handleSelectList={handleSelectList}
-          handleNewToDoList={handleNewToDoList}
-          handleDeleteToDoList={handleDeleteToDoList}
-        />
-      </div>
-    );
-  } else {
-    return (
-      <div className="App">
-        <ToDoList listId={selectedItem} handleBackButton={backToList} />
-      </div>
-    );
-  }
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<WelcomeScreen />} />
+        <Route path="/lists" element={
+          <ListToDoLists
+            listSummaries={listSummaries}
+            handleSelectList={handleSelectList}
+            handleNewToDoList={handleNewToDoList}
+            handleDeleteToDoList={handleDeleteToDoList}
+          />
+        } />
+        <Route path="/list/:id" element={
+          <ToDoList listId={selectedItem} handleBackButton={backToList} />
+        } />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
