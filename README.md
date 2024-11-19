@@ -8,6 +8,8 @@ You first need to configure the environment, by creating a text file called `.en
 
 ```text
 export MONGODB_URI='mongodb+srv://YOURUSERNAME:YOURPASSWORDHERE@sandbox.ABCDEF.mongodb.net/todo_list_app?retryWrites=true&w=majority&appName=farm_stack_webinar'
+export DEBUG_MODE=True
+export GEMINI_API_KEY='your_gemini_api_key_here'
 ```
 
 You'll need to set it to _your_ MongoDB connection string, though, not mine.

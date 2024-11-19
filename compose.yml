@@ -35,7 +35,7 @@ services:
       - "8001:3001"
     environment:
       - DEBUG=true
-      - WATCHFILES_FORCE_POLLING=true # Force FastAPI to poll filesystem.
+      - WATCHFILES_FORCE_POLLING=true
     env_file:
       - path: ./.env
         required: true

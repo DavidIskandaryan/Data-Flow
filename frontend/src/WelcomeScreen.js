@@ -1,11 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './WelcomeScreen.css';
 import companyImage from './Images/Businessman.jpg';
+import { FileContext } from './FileContext';
 
 function WelcomeScreen() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+  const { addFiles } = useContext(FileContext);
 
   const handleUpload = () => {
     fileInputRef.current.click();
@@ -14,6 +16,7 @@ function WelcomeScreen() {
   const handleFileChange = (event) => {
     const files = event.target.files;
     if (files && files.length > 0) {
+      addFiles(files);
       navigate("/lists");
     } else {
       alert("Please select at least one file.");

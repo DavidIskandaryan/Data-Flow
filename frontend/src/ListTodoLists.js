@@ -1,63 +1,60 @@
-import "./ListTodoLists.css";
-import { useRef } from "react";
-import { BiSolidTrash } from "react-icons/bi";
+import React, { useRef, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './ListTodoLists.css';
+import { FileContext } from './FileContext';
 
-/**
- *
- * @param {Object} state - The state to be displayed
- * @param {null|array} state.listSummaries - null, if the data is still being loaded, or an array of list summary objects.
- */
-function ListToDoLists({
-  listSummaries,
-  handleSelectList,
-  handleNewToDoList,
-  handleDeleteToDoList,
-}) {
-  const labelRef = useRef();
+function ListToDoLists() {
+  const { uploadedFiles, addFiles, removeFile } = useContext(FileContext);
+  const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
-  if (listSummaries === null) {
-    return <div className="ListToDoLists loading">Loading to-do lists ...</div>;
-  } else if (listSummaries.length === 0) {
-    return <div className="ListToDoLists">There are no to-do lists!</div>;
-  }
+  const handleUploadMoreFiles = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (event) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      addFiles(files);
+    }
+  };
+
+  const handleAnalyze = () => {
+    if (uploadedFiles.length === 0) {
+      alert("Please upload at least one file to analyze.");
+      return;
+    }
+    navigate("/analyze");
+  };
+
   return (
     <div className="ListToDoLists">
-      <h1>Small Change</h1>
-      <div className="box">
-        <label>
-          New To-Do List:&nbsp;
-          <input id={labelRef} type="text" />
-        </label>
-        <button
-          onClick={() =>
-            handleNewToDoList(document.getElementById(labelRef).value)
-          }
-        >
-          New
-        </button>
+      <h1>Uploaded Files</h1>
+      <div className="fileList">
+        {uploadedFiles.length === 0 ? (
+          <p>No files uploaded.</p>
+        ) : (
+          uploadedFiles.map((file, index) => (
+            <div key={index} className="fileItem">
+              <span className="fileName">{file.name}</span>
+              <button className="deleteButton" onClick={() => removeFile(index)}>
+                Delete
+              </button>
+            </div>
+          ))
+        )}
       </div>
-      {listSummaries.map((summary) => {
-        return (
-          <div
-            key={summary._id}
-            className="summary"
-            onClick={() => handleSelectList(summary._id)}
-          >
-            <span className="name">{summary.name} </span>
-            <span className="count">({summary.item_count} items)</span>
-            <span className="flex"></span>
-            <span
-              className="trash"
-              onClick={(evt) => {
-                evt.stopPropagation();
-                handleDeleteToDoList(summary._id);
-              }}
-            >
-              <BiSolidTrash />
-            </span>
-          </div>
-        );
-      })}
+      <div className="buttonContainer">
+        <button className="uploadButton" onClick={handleUploadMoreFiles}>Upload More Files</button>
+        <button className="analyzeButton" onClick={handleAnalyze}>Analyze with AI</button>
+      </div>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        multiple
+        onChange={handleFileChange}
+      />
     </div>
   );
 }

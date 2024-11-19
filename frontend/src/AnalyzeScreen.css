@@ -1,0 +1,42 @@
+.AnalyzeScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background-color: #eaeaea;
+    font-family: 'Georgia', serif;
+    color: #123a34;
+    min-height: 100vh;
+}
+
+h1 {
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: #234e4a;
+}
+
+.content {
+    width: 80%;
+    text-align: left;
+}
+
+.fileSection {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 1rem;
+}
+
+.analysisSection h3 {
+    color: #1d3a3a;
+    margin-top: 1rem;
+    font-size: 1.5rem;
+}
+
+.analysisSection p {
+    background-color: #f4f4f4;
+    padding: 1rem;
+    border-radius: 5px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 1rem;
+}

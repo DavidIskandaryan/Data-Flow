@@ -1,6 +1,6 @@
 {
-  "short_name": "To-Do List",
-  "name": "A Sample FARM Stack application, by MongoDB",
+  "short_name": "Data Flow",
+  "name": "Data flow",
   "icons": [
     {
       "src": "favicon.png",

@@ -36,3 +36,7 @@ wheel==0.43.0
 # The following packages are considered to be unsafe in a requirements file:
 # pip
 # setuptools
+
+PyPDF2==3.0.0  
+openpyxl==3.0.10 
+google-generativeai==0.8.3
