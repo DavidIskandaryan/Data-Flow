@@ -11,32 +11,64 @@
 
 h1 {
     margin-bottom: 2rem;
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: #234e4a;
+    text-align: center;
 }
 
-.content {
-    width: 80%;
-    text-align: left;
+h2 {
+    color: #1d3a3a;
+    font-size: 2rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #234e4a;
 }
 
 .fileSection {
-    margin-bottom: 2rem;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 1rem;
+    width: 80%;
+    margin-bottom: 3rem;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.analysisSection {
+    margin: 1.5rem 0;
 }
 
 .analysisSection h3 {
-    color: #1d3a3a;
-    margin-top: 1rem;
+    color: #234e4a;
     font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+    border-left: 4px solid #234e4a;
 }
 
-.analysisSection p {
-    background-color: #f4f4f4;
-    padding: 1rem;
+.analysisContent {
+    background-color: #f8f8f8;
+    padding: 1.5rem;
     border-radius: 5px;
+    margin-left: 1rem;
+}
+
+.analysisContent p {
+    font-size: 1.1rem;
+    line-height: 1.6;
     white-space: pre-wrap;
-    word-wrap: break-word;
-    font-size: 1rem;
+    margin: 0;
+}
+
+.loading, .error {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 2rem;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.error {
+    color: #e74c3c;
 }
