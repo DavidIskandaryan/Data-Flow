@@ -5,6 +5,8 @@ from typing import List
 import PyPDF2
 import openpyxl
 import io
+import asyncio
+from functools import partial
 
 app = FastAPI()
 
@@ -48,43 +50,71 @@ async def analyze_with_gemini(text: str):
     
     for section, prompt in sections.items():
         try:
+            print(f"Analyzing section: {section}")
             full_prompt = f"{prompt}\n\nContext:\n{text}"
             response = model.generate_content(full_prompt)
             analysis_results[section] = response.text
+            print(f"Completed analysis for: {section}")
         except Exception as e:
+            print(f"Error in section {section}: {str(e)}")
             analysis_results[section] = f"Error analyzing {section}: {str(e)}"
     
     return analysis_results
 
+def process_pdf(content):
+    pdf_reader = PyPDF2.PdfReader(io.BytesIO(content))
+    return " ".join(page.extract_text() or "" for page in pdf_reader.pages)
+
+def process_excel(content):
+    workbook = openpyxl.load_workbook(io.BytesIO(content))
+    sheet = workbook.active
+    return "\n".join(" ".join(str(cell.value) for cell in row) for row in sheet.iter_rows())
+
 @app.post("/api/analyze")
 async def analyze_files(files: List[UploadFile] = File(...)):
     analyzed_data = []
+    print(f"Received {len(files)} files for analysis")
 
     for file in files:
-        content = await file.read()
-        file_extension = file.filename.split('.')[-1].lower()
-        extracted_text = ""
-
-        if file_extension == "pdf":
+        try:
+            print(f"\nProcessing file: {file.filename}")
+            content = await file.read()
+            print(f"File content length: {len(content)} bytes")
+            
             try:
-                pdf_reader = PyPDF2.PdfReader(io.BytesIO(content))
-                extracted_text = " ".join(page.extract_text() or "" for page in pdf_reader.pages)
-            except Exception as e:
-                raise HTTPException(status_code=500, detail=f"Error reading PDF {file.filename}: {str(e)}")
+                async with asyncio.timeout(240):
+                    if file.filename.endswith('.pdf'):
+                        print("Processing PDF file...")
+                        extracted_text = await asyncio.to_thread(process_pdf, content)
+                        print(f"Extracted {len(extracted_text)} characters from PDF")
+                    elif file.filename.endswith('.xlsx'):
+                        print("Processing Excel file...")
+                        extracted_text = await asyncio.to_thread(process_excel, content)
+                        print(f"Extracted {len(extracted_text)} characters from Excel")
+                    else:
+                        print(f"Unsupported file type: {file.filename}")
+                        continue
 
-        elif file_extension == "xlsx":
-            try:
-                workbook = openpyxl.load_workbook(io.BytesIO(content))
-                sheet = workbook.active
-                extracted_text = "\n".join(" ".join(str(cell.value) for cell in row) for row in sheet.iter_rows())
-            except Exception as e:
-                raise HTTPException(status_code=500, detail=f"Error reading Excel file {file.filename}: {str(e)}")
+                    if extracted_text:
+                        print(f"Starting Gemini analysis for {file.filename}")
+                        analysis = await analyze_with_gemini(extracted_text)
+                        analyzed_data.append({
+                            "filename": file.filename,
+                            "analysis": analysis
+                        })
+                        print(f"Completed analysis for {file.filename}")
 
-        if extracted_text:
-            analysis = await analyze_with_gemini(extracted_text)
-            analyzed_data.append({
-                "filename": file.filename,
-                "analysis": analysis
-            })
+            except asyncio.TimeoutError:
+                print(f"Timeout processing {file.filename}")
+                raise HTTPException(status_code=504, detail=f"Analysis timed out for {file.filename}")
 
+        except Exception as e:
+            print(f"Error processing {file.filename}: {str(e)}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    print(f"\nAnalysis complete. Processed {len(analyzed_data)} files successfully")
     return {"message": "Analysis complete", "data": analyzed_data}
+
+@app.get("/api/test")
+async def test_endpoint():
+    return {"status": "ok", "message": "Server is running"}
