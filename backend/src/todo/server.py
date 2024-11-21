@@ -90,8 +90,8 @@ async def analyze_with_gemini(text: str):
 
 @app.post("/api/analyze")
 async def analyze_files(background_tasks: BackgroundTasks, files: List[UploadFile] = File(...)):
-    analyzed_data = []
     print(f"Received {len(files)} files for analysis")
+    combined_text = []
 
     for file in files:
         try:
@@ -106,14 +106,9 @@ async def analyze_files(background_tasks: BackgroundTasks, files: List[UploadFil
                         extracted_text = await asyncio.to_thread(process_excel, content)
                     else:
                         continue
-
+                    
                     if extracted_text:
-                        print(f"Starting Gemini analysis for {file.filename}")
-                        analysis = await analyze_with_gemini(extracted_text)
-                        analyzed_data.append({
-                            "filename": file.filename,
-                            "analysis": analysis
-                        })
+                        combined_text.append(f"Content from {file.filename}:\n{extracted_text}")
 
             except asyncio.TimeoutError:
                 print(f"Timeout processing {file.filename}")
@@ -123,7 +118,20 @@ async def analyze_files(background_tasks: BackgroundTasks, files: List[UploadFil
             print(f"Error processing {file.filename}: {str(e)}")
             raise HTTPException(status_code=500, detail=str(e))
 
-    return {"message": "Analysis complete", "data": analyzed_data}
+    all_content = "\n\n=== NEW DOCUMENT ===\n\n".join(combined_text)
+    
+    if all_content:
+        print("Starting combined Gemini analysis")
+        analysis = await analyze_with_gemini(all_content)
+        return {
+            "message": "Analysis complete", 
+            "data": [{
+                "filename": "Combined Analysis",
+                "analysis": analysis
+            }]
+        }
+    else:
+        raise HTTPException(status_code=400, detail="No valid content found to analyze")
 
 @app.get("/api/test")
 async def test_endpoint():

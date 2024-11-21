@@ -5,7 +5,7 @@ import axios from 'axios';
 
 function AnalyzeScreen() {
   const { uploadedFiles } = useContext(FileContext);
-  const [analysisResults, setAnalysisResults] = useState([]);
+  const [analysisResults, setAnalysisResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -28,17 +28,15 @@ function AnalyzeScreen() {
           }
         });
         
-        const cleanedResults = response.data.data.map(fileResult => ({
-          ...fileResult,
-          analysis: Object.fromEntries(
-            Object.entries(fileResult.analysis).map(([key, value]) => [
-              key,
-              cleanAnalysisText(value)
-            ])
-          )
-        }));
+        const result = response.data.data[0];
+        const cleanedAnalysis = Object.fromEntries(
+          Object.entries(result.analysis).map(([key, value]) => [
+            key,
+            cleanAnalysisText(value)
+          ])
+        );
         
-        setAnalysisResults(cleanedResults);
+        setAnalysisResults(cleanedAnalysis);
       } catch (error) {
         console.error("Error analyzing files:", error);
         setError("Error analyzing files. Please try again.");
@@ -72,18 +70,13 @@ function AnalyzeScreen() {
 
   return (
     <div className="AnalyzeScreen">
-      <h1>Financial Analysis Results</h1>
-      {analysisResults.map((fileResult, fileIndex) => (
-        <div key={fileIndex} className="fileSection">
-          <h2>{fileResult.filename}</h2>
-          {Object.entries(fileResult.analysis).map(([section, content], sectionIndex) => (
-            <div key={sectionIndex} className="analysisSection">
-              <h3>{section}</h3>
-              <div className="analysisContent">
-                <p>{content}</p>
-              </div>
-            </div>
-          ))}
+      <h1>Combined Financial Analysis Results</h1>
+      {analysisResults && Object.entries(analysisResults).map(([section, content]) => (
+        <div key={section} className="analysisSection">
+          <h3>{section}</h3>
+          <div className="analysisContent">
+            <p>{content}</p>
+          </div>
         </div>
       ))}
     </div>
