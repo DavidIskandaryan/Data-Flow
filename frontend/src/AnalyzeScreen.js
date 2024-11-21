@@ -70,7 +70,7 @@ function AnalyzeScreen() {
 
   return (
     <div className="AnalyzeScreen">
-      <h1>Combined Financial Analysis Results</h1>
+      <h1>AI Financial Analysis Results</h1>
       {analysisResults && Object.entries(analysisResults).map(([section, content]) => (
         <div key={section} className="analysisSection">
           <h3>{section}</h3>

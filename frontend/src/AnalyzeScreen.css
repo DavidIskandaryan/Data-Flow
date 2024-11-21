@@ -34,29 +34,32 @@ h2 {
 }
 
 .analysisSection {
-    margin: 1.5rem 0;
+    width: 80%;
+    margin-bottom: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
 }
 
 .analysisSection h3 {
-    color: #234e4a;
+    background-color: #234e4a;
+    color: white;
+    padding: 1rem 1.5rem;
+    margin: 0;
     font-size: 1.5rem;
-    margin-bottom: 1rem;
-    padding-left: 1rem;
-    border-left: 4px solid #234e4a;
 }
 
 .analysisContent {
-    background-color: #f8f8f8;
     padding: 1.5rem;
-    border-radius: 5px;
-    margin-left: 1rem;
 }
 
 .analysisContent p {
     font-size: 1.1rem;
     line-height: 1.6;
-    white-space: pre-wrap;
+    color: #1d3a3a;
     margin: 0;
+    white-space: pre-wrap;
 }
 
 .loading, .error {
@@ -67,8 +70,10 @@ h2 {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 80%;
 }
 
 .error {
     color: #e74c3c;
+    border-left: 4px solid #e74c3c;
 }
