@@ -9,6 +9,10 @@ function AnalyzeScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const cleanAnalysisText = (text) => {
+    return text.replace(/[#*•-]/g, '').trim();
+  };
+
   useEffect(() => {
     const analyzeFiles = async () => {
       setLoading(true);
@@ -24,7 +28,17 @@ function AnalyzeScreen() {
           }
         });
         
-        setAnalysisResults(response.data.data);
+        const cleanedResults = response.data.data.map(fileResult => ({
+          ...fileResult,
+          analysis: Object.fromEntries(
+            Object.entries(fileResult.analysis).map(([key, value]) => [
+              key,
+              cleanAnalysisText(value)
+            ])
+          )
+        }));
+        
+        setAnalysisResults(cleanedResults);
       } catch (error) {
         console.error("Error analyzing files:", error);
         setError("Error analyzing files. Please try again.");
