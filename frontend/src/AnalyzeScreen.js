@@ -54,7 +54,7 @@ function AnalyzeScreen() {
     return (
       <div className="AnalyzeScreen">
         <h1>Analyzing Files...</h1>
-        <div className="loading">Please wait while we analyze your files...</div>
+        <div className="loading">This may take a few minutes.</div>
       </div>
     );
   }

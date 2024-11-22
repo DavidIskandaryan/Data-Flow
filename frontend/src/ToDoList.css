@@ -1,23 +1,99 @@
-.ToDoList .back {
-    margin: 0 1em;
-    padding: 1em;
-    float: left;
-
-}
-
-.ToDoList .item {
-    border: 1px solid lightgray;
-    padding: 1em;
-    margin: 1em;
-    cursor: pointer;
+.ListToDoLists {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background-color: #eaeaea;
+    font-family: 'Georgia', serif;
+    color: #123a34;
+    min-height: 100vh;
+    min-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
 }
 
-.ToDoList .label {
-    margin-left: 1ex;
+h1 {
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    color: #234e4a;
+    text-align: center;
 }
 
-.ToDoList .checked .label {
-    text-decoration: line-through;
-    color: lightgray;
+.fileList {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.fileItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.fileName {
+    font-size: 1.2rem;
+    color: #1d3a3a;
+}
+
+.deleteButton {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #e04a3a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.deleteButton:hover {
+    background-color: #c0392b;
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.uploadButton {
+    font-size: 1.5rem;
+    font-weight: 400;
+    font-family: 'Georgia', serif;
+    padding: 0.7rem 4rem;
+    background-color: #234e4a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.uploadButton:hover {
+    background-color: #1b3b3a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.loading {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 2rem;
+}
+
+.error {
+    color: #e74c3c;
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 2rem;
 }

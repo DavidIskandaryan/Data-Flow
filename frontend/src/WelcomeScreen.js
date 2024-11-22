@@ -1,7 +1,7 @@
 import React, { useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './WelcomeScreen.css';
-import companyImage from './Images/Businessman.jpg';
+import companyImage from './Images/Welcome.jpg';
 import { FileContext } from './FileContext';
 
 function WelcomeScreen() {
@@ -27,11 +27,14 @@ function WelcomeScreen() {
     <div className="companySection">
       <div className="imageContainer">
         <img src={companyImage} alt="Company Vision" className="companyImage" />
+        <div className="imageOverlay"></div>
       </div>
       <div className="companyContent">
         <div className="topContent">
           <h1>Welcome</h1>
-          <p className="welcomeText">Upload earning statements to be analyzed by our AI model and receive tailored consulting and recommendations for your business instantly.</p>
+          <p className="welcomeText">
+            Upload earning statements to be analyzed by our AI model and receive tailored consulting and recommendations for your business instantly.
+          </p>
           <button onClick={handleUpload} className="uploadButton">Upload</button>
           <input
             type="file"
