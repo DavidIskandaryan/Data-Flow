@@ -1,0 +1,84 @@
+.authScreen {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #eaeaea;
+    font-family: 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+}
+
+.authContainer {
+    background-color: white;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+.authContainer h1 {
+    color: #234e4a;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+}
+
+.authForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.authForm input {
+    padding: 1rem;
+    font-size: 1.1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Georgia', serif;
+    margin-left: 2rem;
+    margin-right: 2rem;
+
+}
+
+.authButton {
+    font-size: 1.5rem;
+    font-weight: 400;
+    font-family: 'Georgia', serif;
+    padding: 1rem;
+    background-color: #234e4a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 9rem;
+    margin-right: 9rem;    
+}
+
+.authButton:hover {
+    background-color: #1b3b3a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.authToggle {
+    text-align: center;
+    margin-top: 2rem;
+    color: #666;
+}
+
+.authToggle span {
+    color: #234e4a;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.authToggle span:hover {
+    color: #1b3b3a;
+}

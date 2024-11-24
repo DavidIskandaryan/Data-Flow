@@ -7,6 +7,9 @@ import ToDoList from "./ToDoList";
 import WelcomeScreen from "./WelcomeScreen";
 import { FileProvider } from "./FileContext";
 import AnalyzeScreen from "./AnalyzeScreen";
+import Header from "./Header";
+import LoginScreen from "./LoginScreen";
+import SignupScreen from "./SignupScreen";
 
 function App() {
   const [listSummaries, setListSummaries] = useState(null);
@@ -25,11 +28,16 @@ function App() {
   return (
     <FileProvider>
       <Router>
-        <Routes>
-          <Route path="/" element={<WelcomeScreen />} />
-          <Route path="/lists" element={<ListToDoLists />} />
-          <Route path="/analyze" element={<AnalyzeScreen />} />
-        </Routes>
+        <Header />
+        <div className="mainContent">
+          <Routes>
+            <Route path="/" element={<WelcomeScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/signup" element={<SignupScreen />} />
+            <Route path="/lists" element={<ListToDoLists />} />
+            <Route path="/analyze" element={<AnalyzeScreen />} />
+          </Routes>
+        </div>
       </Router>
     </FileProvider>
   );

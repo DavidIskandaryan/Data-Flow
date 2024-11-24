@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { jsPDF } from "jspdf";
 import './AnalyzeScreen.css';
 import { FileContext } from './FileContext';
 import axios from 'axios';
@@ -11,6 +12,46 @@ function AnalyzeScreen() {
 
   const cleanAnalysisText = (text) => {
     return text.replace(/[#*•-]/g, '').trim();
+  };
+
+  const handleDownload = () => {
+    const doc = new jsPDF();
+    let yPos = 20;
+  
+    doc.setFontSize(24);
+    doc.text('AI Financial Analysis Results', 105, yPos, { align: 'center' });
+    yPos += 20;
+  
+    const pageWidth = 190;
+    const pageHeight = 280;
+    const leftMargin = 20;
+    const rightMargin = 20;
+  
+    Object.entries(analysisResults).forEach(([section, content]) => {
+      doc.setFontSize(16);
+      if (yPos + 10 > pageHeight) {
+        doc.addPage();
+        yPos = 20;
+      }
+      doc.text(section, leftMargin, yPos);
+      yPos += 10;
+  
+      doc.setFontSize(12);
+      const splitContent = doc.splitTextToSize(content, pageWidth - leftMargin - rightMargin);
+  
+      splitContent.forEach((line) => {
+        if (yPos + 7 > pageHeight) {
+          doc.addPage();
+          yPos = 20;
+        }
+        doc.text(line, leftMargin, yPos);
+        yPos += 7;
+      });
+  
+      yPos += 10;
+    });
+  
+    doc.save('financial-analysis.pdf');
   };
 
   useEffect(() => {
@@ -82,7 +123,7 @@ function AnalyzeScreen() {
             </div>
           ))}
           <div className="analyzeButtonContainer">
-            <button className="analyzeUploadButton" onClick={() => {}}>Download</button>
+            <button className="analyzeUploadButton" onClick={handleDownload}>Download</button>
           </div>
         </>
       )}

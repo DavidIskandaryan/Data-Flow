@@ -1,0 +1,51 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 53px;
+    background-color: #234e4a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-family: 'Georgia', serif;
+}
+
+.headerLogo {
+    height: 40px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    object-fit: contain;
+}
+
+.headerLogo:hover {
+    transform: translateY(-1px);
+}
+
+.headerButtons {
+    display: flex;
+    gap: 1rem;
+}
+
+.headerButton {
+    font-size: 1rem;
+    font-weight: 400;
+    font-family: 'Georgia', serif;
+    padding: 0.5rem 1.5rem;
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.headerButton:hover {
+    background-color: white;
+    color: #234e4a;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
