@@ -1,146 +1,48 @@
+# dal_motor.py
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from pymongo import ReturnDocument
-
 from pydantic import BaseModel, Field
+import bcrypt
 
-from uuid import uuid4
-
-
-class ListSummary(BaseModel):
+class User(BaseModel):
     id: str = Field(alias="_id")
-    name: str
-    item_count: int
+    email: str
+    password: str
 
     @staticmethod
-    def from_doc(doc) -> "ListSummary":
-        return ListSummary(
+    def from_doc(doc) -> "User":
+        return User(
             _id=str(doc["_id"]),
-            name=doc["name"],
-            item_count=doc["item_count"],
+            email=doc["email"],
+            password=doc["password"]
         )
-
-
-class ToDoListItem(BaseModel):
-    id: str
-    label: str
-    checked: bool
-
-    @staticmethod
-    def from_doc(item) -> "ToDoListItem":
-        return ToDoListItem(
-            id=item["id"],
-            label=item["label"],
-            checked=item["checked"],
-        )
-
-
-class ToDoList(BaseModel):
-    id: str = Field(alias="_id")
-    name: str
-    items: list[ToDoListItem]
-
-    @staticmethod
-    def from_doc(doc) -> "ToDoList":
-        return ToDoList(
-            _id=str(doc["_id"]),
-            name=doc["name"],
-            items=[ToDoListItem.from_doc(item) for item in doc["items"]],
-        )
-
 
 async def get_instance(database: AsyncIOMotorDatabase):
-    return ToDoDALMotor(database)
+    return UserDALMotor(database)
 
-
-class ToDoDALMotor:
+class UserDALMotor:
     def __init__(self, database: AsyncIOMotorDatabase):
-        self._todo_collection = database.get_collection("todo_lists")
+        self._user_collection = database.get_collection("users")
 
-    async def list_todo_lists(self, session=None):
-        async for doc in self._todo_collection.find(
-            {},
-            projection={
-                "name": 1,
-                "item_count": {"$size": "$items"},
-            },
-            sort={"name": 1},
-            session=session,
-        ):
-            yield ListSummary.from_doc(doc)
-
-    async def create_todo_list(self, name: str, session=None) -> str:
-        response = await self._todo_collection.insert_one(
-            {"name": name, "items": []},
-            session=session,
-        )
+    async def create_user(self, email: str, password: str) -> str:
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+        
+        response = await self._user_collection.insert_one({
+            "email": email,
+            "password": hashed_password.decode('utf-8')
+        })
         return str(response.inserted_id)
 
-    async def get_todo_list(self, id: str | ObjectId, session=None) -> ToDoList:
-        doc = await self._todo_collection.find_one(
-            {"_id": ObjectId(id)},
-            session=session,
-        )
-        return ToDoList.from_doc(doc)
+    async def get_user_by_email(self, email: str) -> User | None:
+        doc = await self._user_collection.find_one({"email": email})
+        if doc:
+            return User.from_doc(doc)
+        return None
 
-    async def delete_todo_list(self, id: str | ObjectId, session=None) -> bool:
-        response = await self._todo_collection.delete_one(
-            {"_id": ObjectId(id)},
-            session=session,
+    async def verify_password(self, stored_password: str, provided_password: str) -> bool:
+        return bcrypt.checkpw(
+            provided_password.encode('utf-8'),
+            stored_password.encode('utf-8')
         )
-        return response.deleted_count == 1
-
-    async def create_item(
-        self,
-        id: str | ObjectId,
-        label: str,
-        session=None,
-    ) -> ToDoList | None:
-        result = await self._todo_collection.find_one_and_update(
-            {"_id": ObjectId(id)},
-            {
-                "$push": {
-                    "items": {
-                        "id": uuid4().hex,
-                        "label": label,
-                        "checked": False,
-                    }
-                }
-            },
-            session=session,
-            return_document=ReturnDocument.AFTER,
-        )
-        if result:
-            return ToDoList.from_doc(result)
-
-    async def set_checked_state(
-        self,
-        doc_id: str | ObjectId,
-        item_id: str,
-        checked_state: bool,
-        session=None,
-    ) -> ToDoList | None:
-
-        result = await self._todo_collection.find_one_and_update(
-            {"_id": ObjectId(doc_id), "items.id": item_id},
-            {"$set": {"items.$.checked": checked_state}},
-            session=session,
-            return_document=ReturnDocument.AFTER,
-        )
-        if result:
-            return ToDoList.from_doc(result)
-
-    async def delete_item(
-        self,
-        doc_id: str | ObjectId,
-        item_id: str,
-        session=None,
-    ) -> ToDoList | None:
-        result = await self._todo_collection.find_one_and_update(
-            {"_id": ObjectId(doc_id)},
-            {"$pull": {"items": {"id": item_id}}},
-            session=session,
-            return_document=ReturnDocument.AFTER,
-        )
-        if result:
-            return ToDoList.from_doc(result)

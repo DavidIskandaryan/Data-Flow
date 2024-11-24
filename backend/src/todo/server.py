@@ -1,20 +1,78 @@
 import google.generativeai as genai
 import os
-from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks
+from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks, status
+from motor.motor_asyncio import AsyncIOMotorClient
+from contextlib import asynccontextmanager
+import bcrypt
 from typing import List
 import PyPDF2
 import openpyxl
 import io
 import asyncio
 from functools import partial
+from pydantic import BaseModel, EmailStr
+from beanie import Document, init_beanie
 
-app = FastAPI()
+DEBUG = os.environ.get("DEBUG", "").strip().lower() in {"1", "true", "on", "yes"}
+MONGODB_URI = os.environ["MONGODB_URI"]
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    client = AsyncIOMotorClient(MONGODB_URI)
+    database = client.get_default_database()
+
+    pong = await database.command("ping")
+    if int(pong["ok"]) != 1:
+        raise Exception("Cluster connection is not okay!")
+
+    await init_beanie(database=database, document_models=[User])
+    app.gemini_model = model
+    
+    yield
+
+    client.close()
+
+app = FastAPI(lifespan=lifespan, debug=DEBUG)
+
+class User(Document):
+    email: str
+    password: str
+
+    class Settings:
+        name = "users"
+
+class UserCredentials(BaseModel):
+    email: str
+    password: str
+
+@app.post("/api/auth/signup")
+async def signup(user: UserCredentials):
+    existing_user = await User.find_one({"email": user.email})
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), salt)
+    new_user = User(email=user.email, password=hashed_password.decode('utf-8'))
+    await new_user.save()
+    
+    return {"message": "User created successfully"}
+
+@app.post("/api/auth/login")
+async def login(user: UserCredentials):
+    db_user = await User.find_one({"email": user.email})
+    if not db_user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    if not bcrypt.checkpw(user.password.encode('utf-8'), db_user.password.encode('utf-8')):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    return {"email": db_user.email}
+
 def process_pdf(content: bytes) -> str:
-    """Extract text from PDF content"""
     try:
         pdf_reader = PyPDF2.PdfReader(io.BytesIO(content))
         return " ".join(page.extract_text() or "" for page in pdf_reader.pages)
@@ -23,7 +81,6 @@ def process_pdf(content: bytes) -> str:
         raise
 
 def process_excel(content: bytes) -> str:
-    """Extract text from Excel content"""
     try:
         workbook = openpyxl.load_workbook(io.BytesIO(content))
         sheet = workbook.active
@@ -76,7 +133,7 @@ async def analyze_with_gemini(text: str):
                 async with asyncio.timeout(120):
                     print(f"Analyzing section: {section}")
                     full_prompt = f"{prompt}\n\nContext:\n{text}"
-                    response = model.generate_content(full_prompt)
+                    response = app.gemini_model.generate_content(full_prompt)
                     analysis_results[section] = response.text
                     print(f"Completed analysis for: {section}")
             except asyncio.TimeoutError:
@@ -135,5 +192,4 @@ async def analyze_files(background_tasks: BackgroundTasks, files: List[UploadFil
 
 @app.get("/api/test")
 async def test_endpoint():
-    """Test endpoint to verify server is running"""
     return {"status": "ok", "message": "Server is running"}

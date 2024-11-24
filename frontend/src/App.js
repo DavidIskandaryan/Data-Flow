@@ -6,6 +6,7 @@ import ListToDoLists from "./ListTodoLists";
 import ToDoList from "./ToDoList";
 import WelcomeScreen from "./WelcomeScreen";
 import { FileProvider } from "./FileContext";
+import { AuthProvider } from "./AuthContext";
 import AnalyzeScreen from "./AnalyzeScreen";
 import Header from "./Header";
 import LoginScreen from "./LoginScreen";
@@ -26,20 +27,22 @@ function App() {
   }
 
   return (
-    <FileProvider>
-      <Router>
-        <Header />
-        <div className="mainContent">
-          <Routes>
-            <Route path="/" element={<WelcomeScreen />} />
-            <Route path="/login" element={<LoginScreen />} />
-            <Route path="/signup" element={<SignupScreen />} />
-            <Route path="/lists" element={<ListToDoLists />} />
-            <Route path="/analyze" element={<AnalyzeScreen />} />
-          </Routes>
-        </div>
-      </Router>
-    </FileProvider>
+    <AuthProvider>
+      <FileProvider>
+        <Router>
+          <Header />
+          <div className="mainContent">
+            <Routes>
+              <Route path="/" element={<WelcomeScreen />} />
+              <Route path="/login" element={<LoginScreen />} />
+              <Route path="/signup" element={<SignupScreen />} />
+              <Route path="/lists" element={<ListToDoLists />} />
+              <Route path="/analyze" element={<AnalyzeScreen />} />
+            </Routes>
+          </div>
+        </Router>
+      </FileProvider>
+    </AuthProvider>
   );
 }
 
