@@ -46,7 +46,7 @@ function ListToDoLists() {
       </div>
       <div className="buttonContainer">
         <button className="uploadButton" onClick={handleUploadMoreFiles}>Upload More Files</button>
-        <button className="uploadButton" onClick={handleAnalyze}>Analyze with AI</button>
+        <button className="uploadButton" onClick={handleAnalyze}>Analyze with Data Flow</button>
       </div>
       <input
         type="file"

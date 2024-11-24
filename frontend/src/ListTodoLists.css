@@ -59,28 +59,32 @@ h1 {
 
 .buttonContainer {
     display: flex;
+    justify-content: center;
     gap: 1rem;
-    margin-top: 1rem;
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 1000px;
 }
 
-.uploadButton,
-.analyzeButton {
-    font-size: 1.8rem;
-    font-weight: 400;
+.uploadButton {
+    font-size: 3.4rem;
+    font-weight: 600;
     font-family: 'Georgia', serif;
-    padding: 1.2rem 5rem;
+    padding: 0.5rem 2rem;
     background-color: #234e4a;
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    transition: all 0.3s ease;
     text-align: center;
-    transition: background-color 0.3s ease;
-    width: 400px; 
+    transition: all 0.3s ease;
+    width: 400px;
     height: 70px;
 }
 
-.uploadButton:hover,
-.analyzeButton:hover {
+.uploadButton:hover {
     background-color: #1b3b3a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

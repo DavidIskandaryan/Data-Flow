@@ -53,7 +53,7 @@ function AnalyzeScreen() {
   if (loading) {
     return (
       <div className="AnalyzeScreen">
-        <h1>Analyzing Files...</h1>
+        <h1>Analyzing Files with Data Flow...</h1>
         <div className="loading">This may take a few minutes.</div>
       </div>
     );
@@ -71,14 +71,21 @@ function AnalyzeScreen() {
   return (
     <div className="AnalyzeScreen">
       <h1>AI Financial Analysis Results</h1>
-      {analysisResults && Object.entries(analysisResults).map(([section, content]) => (
-        <div key={section} className="analysisSection">
-          <h3>{section}</h3>
-          <div className="analysisContent">
-            <p>{content}</p>
+      {analysisResults && (
+        <>
+          {Object.entries(analysisResults).map(([section, content]) => (
+            <div key={section} className="analysisSection">
+              <h3>{section}</h3>
+              <div className="analysisContent">
+                <p>{content}</p>
+              </div>
+            </div>
+          ))}
+          <div className="analyzeButtonContainer">
+            <button className="analyzeUploadButton" onClick={() => {}}>Download</button>
           </div>
-        </div>
-      ))}
+        </>
+      )}
     </div>
   );
 }

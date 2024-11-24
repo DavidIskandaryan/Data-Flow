@@ -35,7 +35,7 @@ function WelcomeScreen() {
           <p className="welcomeText">
             Upload earning statements to be analyzed by our AI model and receive tailored consulting and recommendations for your business instantly.
           </p>
-          <button onClick={handleUpload} className="uploadButton">Upload</button>
+          <button onClick={handleUpload} className="welcomeUploadButton">Upload</button>
           <input
             type="file"
             ref={fileInputRef}
